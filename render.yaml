@@ -3,7 +3,7 @@
 # Docs: https://render.com/docs/blueprint-spec
 #
 # API_URL is injected at container start into /usr/share/nginx/html/config.js.
-# Set it to your deployed backend URL, e.g. https://goalforge.onrender.com
+# Set it to your deployed backend URL, e.g. https://goalforge-punl.onrender.com
 # (Deploy the backend first, then copy its URL here and re-deploy.)
 
 services:
@@ -15,4 +15,4 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: API_URL
-        value: https://goalforge.onrender.com
+        value: https://goalforge-punl.onrender.com
