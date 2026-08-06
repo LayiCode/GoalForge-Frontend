@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import AuthLayout from '../components/AuthLayout';
+import AuthCard from '../components/AuthCard';
 
 const evaluatePassword = (password, fullName, email) => {
   const name = (fullName || '').toLowerCase().trim();
@@ -63,10 +63,18 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout variant="register">
-      <h2 className="font-display text-3xl font-semibold text-ink">Create account</h2>
-      <p className="mb-8 mt-1 text-muted">Set up your forge in under a minute — it&apos;s free.</p>
-
+    <AuthCard
+      title="Create account"
+      subtitle="Set up your forge in under a minute — it's free."
+      footer={
+        <>
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold text-ember-600 hover:underline">
+            Log in
+          </Link>
+        </>
+      }
+    >
       {error && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
           {error}
@@ -149,13 +157,6 @@ export default function Register() {
           {loading ? 'Creating account…' : 'Create account →'}
         </button>
       </form>
-
-      <p className="mt-8 text-center text-sm text-muted">
-        Already have an account?{' '}
-        <Link to="/login" className="font-semibold text-ember-600 hover:underline">
-          Log in
-        </Link>
-      </p>
-    </AuthLayout>
+    </AuthCard>
   );
 }
