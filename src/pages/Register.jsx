@@ -2,6 +2,28 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import AuthLayout from '../components/AuthLayout';
+
+const evaluatePassword = (password, fullName, email) => {
+  const name = (fullName || '').toLowerCase().trim();
+  const emailLocal = (email || '').toLowerCase().split('@')[0];
+  const pwd = (password || '').toLowerCase();
+  const checks = [
+    { label: 'At least 8 characters', ok: password.length >= 8 },
+    { label: 'An uppercase letter', ok: /[A-Z]/.test(password) },
+    { label: 'A lowercase letter', ok: /[a-z]/.test(password) },
+    { label: 'A number', ok: /\d/.test(password) },
+    { label: 'A special character', ok: /[@$!%*?&#^+=_\-. ]/.test(password) },
+    {
+      label: 'Different from your name or email',
+      ok: Boolean(password) && pwd !== name && pwd !== emailLocal && pwd !== (email || '').toLowerCase() && !(name && pwd.includes(name)),
+    },
+  ];
+  const score = checks.filter(c => c.ok).length;
+  return { checks, score };
+};
+
+const strengthLabel = ['Too weak', 'Weak', 'Getting there', 'Solid', 'Strong', 'Excellent'];
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
@@ -12,8 +34,16 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const { checks, score } = evaluatePassword(password, fullName, email);
+  const allValid = checks.every(c => c.ok);
+  const meterColor = ['bg-red-500', 'bg-red-400', 'bg-amber-400', 'bg-amber-400', 'bg-emerald-500', 'bg-emerald-500'][score];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!allValid) {
+      setError('Please satisfy every password requirement below.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -21,102 +51,111 @@ export default function Register() {
       login(res.data.token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
+      const pwdErr = err.response?.data?.password;
+      const msg = err.response?.data?.error
+        || err.response?.data?.message
+        || (typeof pwdErr === 'string' ? pwdErr : pwdErr?.[0])
+        || 'Registration failed';
+      setError(typeof msg === 'string' ? msg : 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Panel */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-purple-700 via-purple-600 to-indigo-700 flex-col justify-center items-center text-white p-12">
-        <div className="text-6xl mb-6">🎯</div>
-        <h1 className="text-5xl font-bold mb-4">GoalForge</h1>
-        <p className="text-purple-200 text-xl text-center max-w-sm">
-          Start your journey today. Set goals, track progress, achieve more.
-        </p>
-        <div className="mt-12 space-y-4 w-full max-w-sm">
-          {['100% free to use', 'Track unlimited goals', 'Milestone progress tracking'].map(item => (
-            <div key={item} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3">
-              <span className="text-green-300 text-lg">✓</span>
-              <span className="text-purple-100">{item}</span>
-            </div>
-          ))}
+    <AuthLayout variant="register">
+      <h2 className="font-display text-3xl font-semibold text-ink">Create account</h2>
+      <p className="mb-8 mt-1 text-muted">Set up your forge in under a minute — it&apos;s free.</p>
+
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
+          {error}
         </div>
-      </div>
+      )}
 
-      {/* Right Panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-8">
-        <div className="w-full max-w-md">
-          <div className="lg:hidden text-center mb-8">
-            <span className="text-5xl">🎯</span>
-            <h1 className="text-3xl font-bold text-purple-600 mt-2">GoalForge</h1>
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label htmlFor="fullName" className="label">Full Name</label>
+          <input
+            id="fullName"
+            type="text"
+            value={fullName}
+            onChange={e => setFullName(e.target.value)}
+            className="input"
+            placeholder="Uthman"
+            required
+          />
+        </div>
 
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Create account</h2>
-          <p className="text-gray-500 mb-8">Start forging your goals today — it's free!</p>
+        <div>
+          <label htmlFor="email" className="label">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="input"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm">
-              ⚠️ {error}
+        <div>
+          <label htmlFor="password" className="label">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="input"
+            placeholder="At least 8 characters"
+            required
+          />
+          {password && (
+            <div className="mt-3">
+              <div className="mb-1 flex items-center justify-between text-xs">
+                <span className="font-medium text-muted">{strengthLabel[score]}</span>
+                <span className="text-muted">{score}/6</span>
+              </div>
+              <div className="flex gap-1">
+                {[0, 1, 2, 3, 4, 5].map(i => (
+                  <span
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full transition ${i < score ? meterColor : 'bg-line-strong'}`}
+                  />
+                ))}
+              </div>
+              <ul className="mt-3 grid gap-1.5">
+                {checks.map(check => (
+                  <li key={check.label} className="flex items-center gap-2 text-xs">
+                    <span
+                      className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] ${
+                        check.ok
+                          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
+                          : 'bg-line text-muted'
+                      }`}
+                    >
+                      {check.ok ? '✓' : ''}
+                    </span>
+                    <span className={check.ok ? 'text-muted' : 'text-ink/70'}>{check.label}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={e => setFullName(e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition bg-white"
-                placeholder="Uthman"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition bg-white"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition bg-white"
-                placeholder="Min. 6 characters"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition shadow-lg shadow-purple-200 disabled:opacity-50"
-            >
-              {loading ? 'Creating account...' : 'Create Account →'}
-            </button>
-          </form>
-
-          <p className="text-center text-sm text-gray-500 mt-8">
-            Already have an account?{' '}
-            <Link to="/login" className="text-purple-600 font-semibold hover:underline">
-              Log in
-            </Link>
-          </p>
         </div>
-      </div>
-    </div>
+
+        <button type="submit" disabled={loading} className="btn btn-primary w-full py-3">
+          {loading ? 'Creating account…' : 'Create account →'}
+        </button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-muted">
+        Already have an account?{' '}
+        <Link to="/login" className="font-semibold text-ember-600 hover:underline">
+          Log in
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }

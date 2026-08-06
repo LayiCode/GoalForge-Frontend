@@ -1,0 +1,18 @@
+# Render Blueprint — Frontend (GoalForge UI)
+# Deploy this repo ("frontend") as a Blueprint on Render.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# API_URL is injected at container start into /usr/share/nginx/html/config.js.
+# Set it to your deployed backend URL, e.g. https://goalforge.onrender.com
+# (Deploy the backend first, then copy its URL here and re-deploy.)
+
+services:
+  - type: web
+    name: goalforge-ui
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: API_URL
+        value: https://goalforge.onrender.com

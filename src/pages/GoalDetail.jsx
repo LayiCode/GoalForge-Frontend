@@ -1,37 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
 
 export default function GoalDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { dark, setDark } = useTheme();
   const [goal, setGoal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newMilestone, setNewMilestone] = useState('');
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState('');
+  const [resources, setResources] = useState([]);
+  const [newResource, setNewResource] = useState({ title: '', url: '' });
+  const [shareCopied, setShareCopied] = useState(false);
 
-  const fetchGoal = async () => {
-    try {
-      const res = await api.get(`/api/goals/${id}`);
-      setGoal(res.data);
-      setEditData({
-        title: res.data.title,
-        description: res.data.description,
-        category: res.data.category,
-        status: res.data.status,
-        targetDate: res.data.targetDate,
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchGoal = useCallback(() => {
+    return api.get(`/api/goals/${id}`)
+      .then(res => {
+        setGoal(res.data);
+        setEditData({
+          title: res.data.title,
+          description: res.data.description,
+          category: res.data.category,
+          status: res.data.status,
+          targetDate: res.data.targetDate,
+          tags: (res.data.tags || []).join(', '),
+          isPublic: res.data.isPublic,
+        });
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [id]);
 
-  useEffect(() => { fetchGoal(); }, [id]);
+  const fetchNotes = useCallback(() => {
+    return api.get(`/api/goals/${id}/notes`)
+      .then(res => setNotes(res.data))
+      .catch(err => console.error(err));
+  }, [id]);
+
+  const fetchResources = useCallback(() => {
+    return api.get(`/api/goals/${id}/resources`)
+      .then(res => setResources(res.data))
+      .catch(err => console.error(err));
+  }, [id]);
+
+  useEffect(() => {
+    fetchGoal();
+    fetchNotes();
+    fetchResources();
+  }, [fetchGoal, fetchNotes, fetchResources]);
 
   const handleAddMilestone = async (e) => {
     e.preventDefault();
@@ -56,29 +76,67 @@ export default function GoalDetail() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await api.put(`/api/goals/${id}`, editData);
+    const payload = {
+      ...editData,
+      tags: editData.tags.split(',').map(t => t.trim()).filter(Boolean),
+    };
+    await api.put(`/api/goals/${id}`, payload);
     setEditing(false);
     fetchGoal();
   };
 
-  const statusColor = (status) => {
-    if (status === 'COMPLETED') return 'bg-green-100 text-green-700';
-    if (status === 'ABANDONED') return 'bg-red-100 text-red-700';
-    return 'bg-blue-100 text-blue-700';
+  const handleAddNote = async (e) => {
+    e.preventDefault();
+    if (!newNote.trim()) return;
+    await api.post(`/api/goals/${id}/notes`, { content: newNote });
+    setNewNote('');
+    fetchNotes();
   };
 
-  const card = { backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' };
-  const input = { backgroundColor: 'var(--bg-input)', border: '2px solid var(--border-input)', color: 'var(--text)' };
+  const handleDeleteNote = async (nId) => {
+    await api.delete(`/api/goals/${id}/notes/${nId}`);
+    fetchNotes();
+  };
+
+  const handleAddResource = async (e) => {
+    e.preventDefault();
+    if (!newResource.title.trim() || !newResource.url.trim()) return;
+    await api.post(`/api/goals/${id}/resources`, newResource);
+    setNewResource({ title: '', url: '' });
+    fetchResources();
+  };
+
+  const handleDeleteResource = async (rId) => {
+    await api.delete(`/api/goals/${id}/resources/${rId}`);
+    fetchResources();
+  };
+
+  const handleCopyShare = async () => {
+    const url = `${window.location.origin}/shared/${goal.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      window.prompt('Copy this link:', url);
+    }
+  };
+
+  const statusColor = (status) => {
+    if (status === 'COMPLETED') return 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400';
+    if (status === 'ABANDONED') return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400';
+    return 'bg-ember-100 text-ember-700 dark:bg-ember-500/15 dark:text-ember-400';
+  };
 
   if (loading) return (
-    <div style={{ backgroundColor: 'var(--bg)' }} className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-400">Loading...</p>
+    <div className="flex min-h-screen items-center justify-center bg-base">
+      <p className="text-muted">Loading…</p>
     </div>
   );
 
   if (!goal) return (
-    <div style={{ backgroundColor: 'var(--bg)' }} className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-400">Goal not found.</p>
+    <div className="flex min-h-screen items-center justify-center bg-base">
+      <p className="text-muted">Goal not found.</p>
     </div>
   );
 
@@ -87,81 +145,99 @@ export default function GoalDetail() {
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-screen bg-base">
 
-      {/* Navbar */}
-      <nav style={{ backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border)' }}
-        className="px-6 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">🎯</span>
-          <h1 className="text-xl font-bold text-purple-600">GoalForge</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <button onClick={() => setDark(!dark)} className="text-xl hover:scale-110 transition">
-            {dark ? '☀️' : '🌙'}
-          </button>
-          <button onClick={() => navigate('/dashboard')}
-            className="text-sm text-gray-400 hover:text-purple-600 transition">
-            ← Dashboard
-          </button>
-        </div>
-      </nav>
+      <Navbar>
+        <button onClick={() => navigate('/dashboard')} className="nav-item">
+          ← Dashboard
+        </button>
+      </Navbar>
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
 
-        {/* Goal Header */}
         {!editing ? (
-          <div style={card} className="p-6 rounded-2xl shadow-sm mb-6">
-            <div className="flex justify-between items-start mb-3">
-              <h2 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{goal.title}</h2>
-              <span className={`text-xs px-3 py-1 rounded-full font-medium ${statusColor(goal.status)}`}>
+          <div className="card mb-6 p-6">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <h2 className="font-display text-2xl font-semibold text-ink">{goal.title}</h2>
+              <span className={`chip whitespace-nowrap ${statusColor(goal.status)}`}>
                 {goal.status.replace('_', ' ')}
               </span>
             </div>
             {goal.description && (
-              <p className="text-gray-400 mb-4">{goal.description}</p>
+              <p className="mb-4 text-muted">{goal.description}</p>
             )}
-            <div className="text-sm text-gray-400 space-y-1">
+            <div className="space-y-1 text-sm text-muted">
               {goal.category && <p>📁 Category: {goal.category}</p>}
               {goal.targetDate && <p>📅 Target Date: {goal.targetDate}</p>}
             </div>
-            <button onClick={() => setEditing(true)}
-              className="mt-4 text-sm bg-purple-50 text-purple-600 px-4 py-2 rounded-xl hover:bg-purple-100 transition">
-              Edit Goal
-            </button>
+
+            {goal.tags?.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {goal.tags.map(tag => (
+                  <span key={tag} className="chip bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-400">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex items-center gap-2">
+              <button onClick={() => setEditing(true)} className="btn btn-outline">
+                Edit Goal
+              </button>
+              <button
+                onClick={handleCopyShare}
+                className="btn btn-outline"
+                title="Copy public link"
+              >
+                {goal.isPublic ? (shareCopied ? '✓ Link copied!' : '🔗 Share') : '🔒 Share'}
+              </button>
+            </div>
+            {!goal.isPublic && (
+              <p className="mt-2 text-xs text-muted">
+                Turn on &quot;Share publicly&quot; when editing to get a public link.
+              </p>
+            )}
           </div>
         ) : (
-          <div style={card} className="p-6 rounded-2xl shadow-sm mb-6">
-            <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--text)' }}>Edit Goal</h3>
+          <div className="card mb-6 p-6">
+            <h3 className="font-display mb-4 text-lg font-semibold text-ink">Edit Goal</h3>
             <form onSubmit={handleUpdate} className="space-y-4">
               <input type="text" value={editData.title}
                 onChange={e => setEditData({ ...editData, title: e.target.value })}
-                style={input} className="w-full rounded-xl px-4 py-3 focus:outline-none" required />
+                className="input" required />
               <textarea value={editData.description}
                 onChange={e => setEditData({ ...editData, description: e.target.value })}
-                style={input} className="w-full rounded-xl px-4 py-3 focus:outline-none resize-none" rows={3} />
-              <div className="grid grid-cols-2 gap-4">
+                className="input resize-none" rows={3} />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <input type="text" placeholder="Category" value={editData.category}
                   onChange={e => setEditData({ ...editData, category: e.target.value })}
-                  style={input} className="rounded-xl px-4 py-3 focus:outline-none" />
+                  className="input" />
                 <input type="date" value={editData.targetDate}
                   onChange={e => setEditData({ ...editData, targetDate: e.target.value })}
-                  style={input} className="rounded-xl px-4 py-3 focus:outline-none" />
+                  className="input" />
               </div>
+              <input type="text" placeholder="Tags (comma separated)" value={editData.tags}
+                onChange={e => setEditData({ ...editData, tags: e.target.value })}
+                className="input" />
               <select value={editData.status}
                 onChange={e => setEditData({ ...editData, status: e.target.value })}
-                style={input} className="w-full rounded-xl px-4 py-3 focus:outline-none">
+                className="input">
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
                 <option value="ABANDONED">Abandoned</option>
               </select>
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-ink">
+                <input type="checkbox" checked={editData.isPublic}
+                  onChange={e => setEditData({ ...editData, isPublic: e.target.checked })}
+                  className="h-4 w-4 cursor-pointer accent-ember-600" />
+                Share this goal publicly
+              </label>
               <div className="flex gap-2">
-                <button type="submit"
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2 rounded-xl font-semibold">
+                <button type="submit" className="btn btn-primary flex-1">
                   Save Changes
                 </button>
-                <button type="button" onClick={() => setEditing(false)}
-                  className="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl font-semibold">
+                <button type="button" onClick={() => setEditing(false)} className="btn btn-outline flex-1">
                   Cancel
                 </button>
               </div>
@@ -169,52 +245,111 @@ export default function GoalDetail() {
           </div>
         )}
 
-        {/* Progress Bar */}
-        <div style={card} className="p-6 rounded-2xl shadow-sm mb-6">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
+        <div className="card mb-6 p-6">
+          <div className="mb-2 flex justify-between text-sm text-muted">
             <span>Milestone Progress</span>
             <span>{completed}/{total} completed</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-3">
-            <div className="bg-gradient-to-r from-purple-500 to-indigo-500 h-3 rounded-full transition-all"
-              style={{ width: `${progress}%` }} />
+          <div className="h-3 w-full rounded-full bg-line">
+            <div
+              className="h-3 rounded-full bg-gradient-to-r from-ember-400 to-ember-700 transition-all"
+              style={{ width: `${progress}%` }}
+            />
           </div>
-          <p className="text-right text-xs text-gray-400 mt-1">{progress}%</p>
+          <p className="mt-1 text-right text-xs text-muted">{progress}%</p>
         </div>
 
-        {/* Milestones */}
-        <div style={card} className="p-6 rounded-2xl shadow-sm">
-          <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--text)' }}>Milestones</h3>
+        <div className="card mb-6 p-6">
+          <h3 className="font-display mb-4 text-lg font-semibold text-ink">Milestones</h3>
 
-          <form onSubmit={handleAddMilestone} className="flex gap-2 mb-4">
+          <form onSubmit={handleAddMilestone} className="mb-4 flex gap-2">
             <input type="text" placeholder="Add a milestone..." value={newMilestone}
               onChange={e => setNewMilestone(e.target.value)}
-              style={input} className="flex-1 rounded-xl px-4 py-2 focus:outline-none text-sm" />
-            <button type="submit"
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-xl text-sm hover:from-purple-700 hover:to-indigo-700 transition">
-              Add
-            </button>
+              className="input flex-1" />
+            <button type="submit" className="btn btn-primary">Add</button>
           </form>
 
           {goal.milestones?.length === 0 ? (
-            <p className="text-gray-400 text-sm text-center py-4">No milestones yet. Add one above!</p>
+            <p className="py-4 text-center text-sm text-muted">No milestones yet. Add one above!</p>
           ) : (
             <ul className="space-y-2">
               {goal.milestones?.map(milestone => (
-                <li key={milestone.id}
-                  style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
-                  className="flex items-center justify-between p-3 rounded-xl">
+                <li key={milestone.id} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-base p-3">
                   <div className="flex items-center gap-3">
                     <input type="checkbox" checked={milestone.completed}
                       onChange={() => handleToggleMilestone(milestone)}
-                      className="accent-purple-600 w-4 h-4 cursor-pointer" />
-                    <span className={`text-sm ${milestone.completed ? 'line-through text-gray-400' : ''}`}
-                      style={{ color: milestone.completed ? undefined : 'var(--text)' }}>
+                      className="h-4 w-4 cursor-pointer accent-ember-600" />
+                    <span className={`text-sm ${milestone.completed ? 'text-muted line-through' : 'text-ink'}`}>
                       {milestone.title}
                     </span>
                   </div>
                   <button onClick={() => handleDeleteMilestone(milestone.id)}
-                    className="text-red-400 hover:text-red-600 text-xs transition">
+                    className="text-xs text-muted transition hover:text-red-500">
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="card mb-6 p-6">
+          <h3 className="font-display mb-4 text-lg font-semibold text-ink">📝 Journal</h3>
+
+          <form onSubmit={handleAddNote} className="mb-4">
+            <textarea placeholder="Write a note about your progress..." value={newNote}
+              onChange={e => setNewNote(e.target.value)}
+              className="input resize-none" rows={3} />
+            <button type="submit" className="btn btn-primary mt-2">Add Note</button>
+          </form>
+
+          {notes.length === 0 ? (
+            <p className="py-4 text-center text-sm text-muted">No notes yet. Reflect on your progress!</p>
+          ) : (
+            <ul className="space-y-3">
+              {notes.map(note => (
+                <li key={note.id} className="rounded-xl border border-line bg-base p-3">
+                  <p className="whitespace-pre-wrap text-sm text-ink">{note.content}</p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-muted">
+                      {new Date(note.createdAt).toLocaleDateString()} {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                    <button onClick={() => handleDeleteNote(note.id)}
+                      className="text-xs text-muted transition hover:text-red-500">
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="card p-6">
+          <h3 className="font-display mb-4 text-lg font-semibold text-ink">🔗 Resources</h3>
+
+          <form onSubmit={handleAddResource} className="mb-4 flex flex-col gap-2 sm:flex-row">
+            <input type="text" placeholder="Title (e.g. Course page)" value={newResource.title}
+              onChange={e => setNewResource({ ...newResource, title: e.target.value })}
+              className="input flex-1" />
+            <input type="url" placeholder="https://..." value={newResource.url}
+              onChange={e => setNewResource({ ...newResource, url: e.target.value })}
+              className="input flex-1" />
+            <button type="submit" className="btn btn-primary">Add</button>
+          </form>
+
+          {resources.length === 0 ? (
+            <p className="py-4 text-center text-sm text-muted">No resources yet. Add helpful links!</p>
+          ) : (
+            <ul className="space-y-2">
+              {resources.map(resource => (
+                <li key={resource.id} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-base p-3">
+                  <a href={resource.url} target="_blank" rel="noopener noreferrer"
+                    className="truncate text-sm text-ember-600 hover:underline dark:text-ember-400">
+                    🔗 {resource.title}
+                  </a>
+                  <button onClick={() => handleDeleteResource(resource.id)}
+                    className="ml-3 text-xs text-muted transition hover:text-red-500">
                     Delete
                   </button>
                 </li>

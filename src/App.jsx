@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import GoalDetail from './pages/GoalDetail';
+import SharedGoal from './pages/SharedGoal';
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -19,6 +20,7 @@ function AppRoutes() {
       <Route path="/register" element={!token ? <Register /> : <Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/goals/:id" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
+      <Route path="/shared/:id" element={<SharedGoal />} />
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
