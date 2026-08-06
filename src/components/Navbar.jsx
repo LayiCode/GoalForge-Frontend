@@ -1,22 +1,22 @@
-import { Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
+import { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import Logo from './Logo';
+import ThemeToggle from './ThemeToggle';
 
-const SunIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4" />
-  </svg>
-);
+const NAV = [
+  { to: '/dashboard', label: 'Overview', icon: '🏠' },
+  { to: '/goals', label: 'Goals', icon: '🎯' },
+  { to: '/analytics', label: 'Analytics', icon: '📊' },
+  { to: '/reminders', label: 'Reminders', icon: '⏰' },
+  { to: '/account', label: 'Account', icon: '👤' },
+];
 
-const MoonIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-  </svg>
-);
+const linkClass = ({ isActive }) =>
+  `nav-item ${isActive ? 'bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-300' : ''}`;
 
-export default function Navbar({ children, homeTo = '/dashboard' }) {
-  const { dark, setDark } = useTheme();
+export default function Navbar({ children, homeTo = '/dashboard', links = true }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <nav className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -26,18 +26,53 @@ export default function Navbar({ children, homeTo = '/dashboard' }) {
             Goal<span className="text-ember-600">Forge</span>
           </span>
         </Link>
+
+        {links && (
+          <div className="hidden items-center gap-1 md:flex">
+            {NAV.map(item => (
+              <NavLink key={item.to} to={item.to} className={linkClass}>
+                <span className="text-base leading-none">{item.icon}</span>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-2">
           {children}
-          <button
-            onClick={() => setDark(!dark)}
-            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-            title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="icon-btn"
-          >
-            {dark ? <SunIcon /> : <MoonIcon />}
-          </button>
+          <ThemeToggle />
+          {links && (
+            <button
+              onClick={() => setOpen(!open)}
+              aria-label="Toggle navigation menu"
+              aria-expanded={open}
+              className="icon-btn md:hidden"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                {open
+                  ? <path d="M6 6l12 12M18 6L6 18" />
+                  : <path d="M3 6h18M3 12h18M3 18h18" />}
+              </svg>
+            </button>
+          )}
         </div>
       </div>
+
+      {links && open && (
+        <div className="border-t border-line bg-surface px-4 py-2 md:hidden">
+          {NAV.map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onClick={() => setOpen(false)}
+              className={`${linkClass} w-full justify-start`}
+            >
+              <span className="text-base leading-none">{item.icon}</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
