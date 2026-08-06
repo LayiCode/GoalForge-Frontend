@@ -4,6 +4,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Goals from './pages/Goals';
 import NewGoal from './pages/NewGoal';
@@ -25,6 +27,8 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={!token ? <Login /> : <Navigate to="/dashboard" />} />
       <Route path="/register" element={!token ? <Register /> : <Navigate to="/dashboard" />} />
+      <Route path="/forgot-password" element={!token ? <ForgotPassword /> : <Navigate to="/dashboard" />} />
+      <Route path="/reset-password" element={!token ? <ResetPassword /> : <Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
       <Route path="/goals/new" element={<ProtectedRoute><NewGoal /></ProtectedRoute>} />
