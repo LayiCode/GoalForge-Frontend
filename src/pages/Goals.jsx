@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import GoalCard from '../components/GoalCard';
-import Logo from '../components/Logo';
 
 export default function Goals() {
+  const [searchParams] = useSearchParams();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
   const navigate = useNavigate();
@@ -89,7 +89,6 @@ export default function Goals() {
           </div>
         ) : goals.length === 0 ? (
           <div className="card py-16 text-center">
-            <div className="mb-4 flex justify-center opacity-80"><Logo size={48} /></div>
             <h3 className="font-display mb-2 text-xl font-semibold text-ink">No goals found</h3>
             <p className="mb-6 text-muted">
               {search || statusFilter || categoryFilter || tagFilter

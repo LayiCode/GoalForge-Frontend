@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import Logo from '../components/Logo';
 import { statusColor, categoryEmoji } from '../utils/goalUi';
 
 export default function Dashboard() {
@@ -94,7 +93,6 @@ export default function Dashboard() {
                 </div>
                 {recent.length === 0 ? (
                   <div className="py-6 text-center">
-                    <div className="mb-3 flex justify-center opacity-80"><Logo size={40} /></div>
                     <p className="mb-4 text-sm text-muted">No goals yet.</p>
                     <button onClick={() => navigate('/goals/new')} className="btn btn-primary">
                       + Forge your first goal

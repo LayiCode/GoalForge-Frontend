@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import Logo from '../components/Logo';
 import { statusColor, categoryEmoji } from '../utils/goalUi';
 
 export default function Reminders() {
@@ -40,7 +39,6 @@ export default function Reminders() {
           <div className="py-20 text-center"><p className="text-muted">Loading…</p></div>
         ) : dates.length === 0 ? (
           <div className="card py-16 text-center">
-            <div className="mb-4 flex justify-center opacity-80"><Logo size={48} /></div>
             <h3 className="font-display mb-2 text-xl font-semibold text-ink">All caught up</h3>
             <p className="text-muted">Nothing is due in the next 30 days.</p>
           </div>
