@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import AuthLayout from '../components/AuthLayout';
+import AuthCard from '../components/AuthCard';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -28,10 +28,18 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout variant="login">
-      <h2 className="font-display text-3xl font-semibold text-ink">Welcome back</h2>
-      <p className="mb-8 mt-1 text-muted">Log in to step back into the forge.</p>
-
+    <AuthCard
+      title="Welcome back"
+      subtitle="Log in to step back into the forge."
+      footer={
+        <>
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="font-semibold text-ember-600 hover:underline">
+            Create one free
+          </Link>
+        </>
+      }
+    >
       {error && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
           {error}
@@ -53,7 +61,12 @@ export default function Login() {
         </div>
 
         <div>
-          <label htmlFor="password" className="label">Password</label>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label htmlFor="password" className="label mb-0">Password</label>
+            <Link to="/forgot-password" className="text-xs font-medium text-muted hover:text-ember-600 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
           <input
             id="password"
             type="password"
@@ -69,13 +82,6 @@ export default function Login() {
           {loading ? 'Logging in…' : 'Log in →'}
         </button>
       </form>
-
-      <p className="mt-8 text-center text-sm text-muted">
-        Don&apos;t have an account?{' '}
-        <Link to="/register" className="font-semibold text-ember-600 hover:underline">
-          Create one free
-        </Link>
-      </p>
-    </AuthLayout>
+    </AuthCard>
   );
 }
