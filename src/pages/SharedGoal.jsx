@@ -46,7 +46,7 @@ export default function SharedGoal() {
   return (
     <div className="min-h-screen bg-base">
 
-      <Navbar homeTo="/">
+      <Navbar homeTo="/" links={false}>
         <Link to="/" className="btn btn-outline">Sign in</Link>
       </Navbar>
 

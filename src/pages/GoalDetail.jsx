@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 
 export default function GoalDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [goal, setGoal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newMilestone, setNewMilestone] = useState('');
@@ -147,11 +146,7 @@ export default function GoalDetail() {
   return (
     <div className="min-h-screen bg-base">
 
-      <Navbar>
-        <button onClick={() => navigate('/dashboard')} className="nav-item">
-          ← Dashboard
-        </button>
-      </Navbar>
+      <Navbar />
 
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
 
