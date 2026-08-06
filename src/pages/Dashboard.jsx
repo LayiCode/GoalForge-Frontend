@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Logo from '../components/Logo';
-import { statusColor, categoryEmoji } from '../components/GoalCard';
+import { statusColor, categoryEmoji } from '../utils/goalUi';
 
 export default function Dashboard() {
   const navigate = useNavigate();

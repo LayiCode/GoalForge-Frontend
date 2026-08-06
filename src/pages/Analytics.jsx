@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import { categoryEmoji } from '../components/GoalCard';
+import { categoryEmoji } from '../utils/goalUi';
 
 export default function Analytics() {
   const [stats, setStats] = useState(null);
