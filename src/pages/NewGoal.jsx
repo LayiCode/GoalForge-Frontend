@@ -2,14 +2,35 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import { TEMPLATES } from '../utils/goalTemplates';
+import { PlusIcon, TrashIcon } from '../components/Icons';
 
 export default function NewGoal() {
   const navigate = useNavigate();
   const [newGoal, setNewGoal] = useState({
     title: '', description: '', category: '', status: 'IN_PROGRESS', targetDate: '', tags: ''
   });
+  const [milestones, setMilestones] = useState(['']);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const applyTemplate = (template) => {
+    setNewGoal({
+      title: template.title,
+      description: template.description,
+      category: template.category,
+      status: 'IN_PROGRESS',
+      targetDate: '',
+      tags: template.tags.join(', '),
+    });
+    setMilestones(template.milestones.length ? [...template.milestones] : ['']);
+  };
+
+  const updateMilestone = (i, value) =>
+    setMilestones(ms => ms.map((m, idx) => (idx === i ? value : m)));
+  const addMilestone = () => setMilestones(ms => [...ms, '']);
+  const removeMilestone = (i) =>
+    setMilestones(ms => (ms.length === 1 ? [''] : ms.filter((_, idx) => idx !== i)));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +40,7 @@ export default function NewGoal() {
       const payload = {
         ...newGoal,
         tags: newGoal.tags.split(',').map(t => t.trim()).filter(Boolean),
+        milestones: milestones.map(m => m.trim()).filter(Boolean),
       };
       const res = await api.post('/api/goals', payload);
       navigate(`/goals/${res.data.id}`);
@@ -38,6 +60,26 @@ export default function NewGoal() {
         <div className="mb-6">
           <h1 className="section-title">New Goal</h1>
           <p className="mt-1 text-sm text-muted">Define something worth forging.</p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="font-display mb-3 text-lg font-semibold text-ink">Start from a template</h2>
+          <p className="mb-3 text-sm text-muted">Pick a starting plan and tweak it to fit you.</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {TEMPLATES.map(template => (
+              <button
+                key={template.id}
+                type="button"
+                onClick={() => applyTemplate(template)}
+                className="card p-4 text-left transition hover:border-brand-400 hover:shadow-md"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{template.category}</p>
+                <p className="mt-1 font-semibold text-ink">{template.title}</p>
+                <p className="mt-1 line-clamp-2 text-xs text-muted">{template.description}</p>
+                <p className="mt-2 text-xs text-muted">{template.milestones.length} milestones</p>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="card p-6">
@@ -71,6 +113,35 @@ export default function NewGoal() {
                 className="input resize-none"
                 rows={3}
               />
+            </div>
+
+            <div>
+              <label className="label">Milestones</label>
+              <div className="space-y-2">
+                {milestones.map((milestone, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={`Milestone ${i + 1}`}
+                      value={milestone}
+                      onChange={e => updateMilestone(i, e.target.value)}
+                      className="input flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeMilestone(i)}
+                      aria-label="Remove milestone"
+                      className="btn btn-danger px-3!"
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button type="button" onClick={addMilestone} className="btn btn-outline mt-2">
+                <PlusIcon className="h-4 w-4" />
+                Add milestone
+              </button>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
