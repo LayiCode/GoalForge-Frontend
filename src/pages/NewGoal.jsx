@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import { TEMPLATES } from '../utils/goalTemplates';
+import { TEMPLATES, matchTemplate } from '../utils/goalTemplates';
 import { PlusIcon, TrashIcon } from '../components/Icons';
 
 export default function NewGoal() {
@@ -27,6 +27,7 @@ export default function NewGoal() {
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
+  const [aiNote, setAiNote] = useState('');
 
   const applyPlan = (plan) => {
     setNewGoal({
@@ -43,14 +44,22 @@ export default function NewGoal() {
   const handleAiPlan = async () => {
     setAiLoading(true);
     setAiError('');
+    setAiNote('');
     try {
       const res = await api.post('/api/ai/plan', { prompt: aiPrompt });
       applyPlan(res.data);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      setAiError(err.response?.data?.error || 'AI could not plan this goal. Please try again.');
+      const fallback = matchTemplate(aiPrompt);
+      if (fallback) {
+        applyPlan(fallback);
+        setAiNote('AI is unavailable right now, so here\'s a matching starter template to edit.');
+      } else {
+        setAiError(err.response?.data?.error || 'AI could not plan this goal. Please try again.');
+        return;
+      }
     } finally {
       setAiLoading(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -140,6 +149,9 @@ export default function NewGoal() {
           </button>
           {aiError && (
             <p className="mt-3 text-sm text-red-600 dark:text-red-400">{aiError}</p>
+          )}
+          {aiNote && (
+            <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{aiNote}</p>
           )}
         </div>
 

@@ -82,3 +82,30 @@ export const TEMPLATES = [
     ],
   },
 ];
+
+const KEYWORDS = {
+  'morning-run': ['run', 'running', 'jog', 'jogging', 'fit', 'fitness', 'exercise', 'cardio'],
+  'meal-prep': ['meal', 'meals', 'cook', 'cooking', 'food', 'nutrition', 'diet', 'eat', 'recipe'],
+  'read-12-books': ['read', 'reading', 'book', 'books'],
+  'emergency-fund': ['save', 'saving', 'savings', 'fund', 'money', 'budget', 'emergency', 'finance'],
+  'study-exams': ['study', 'studying', 'exam', 'exams', 'test', 'school', 'class', 'grade', 'learn'],
+  'side-project': ['project', 'app', 'code', 'coding', 'programming', 'startup', 'freelance', 'freelancing', 'product', 'launch', 'career'],
+};
+
+export const matchTemplate = (prompt) => {
+  const tokens = (prompt || '').toLowerCase().match(/[a-z]+/g) || [];
+  let best = null;
+  let bestScore = 0;
+  for (const template of TEMPLATES) {
+    const words = KEYWORDS[template.id] || [];
+    const score = words.reduce(
+      (n, word) => n + (tokens.some(token => token === word || token.startsWith(word)) ? 1 : 0),
+      0
+    );
+    if (score > bestScore) {
+      bestScore = score;
+      best = template;
+    }
+  }
+  return best;
+};
