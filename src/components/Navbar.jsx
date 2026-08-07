@@ -1,6 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
 import Logo from './Logo';
-import ThemeToggle from './ThemeToggle';
 import MobileTabBar from './MobileTabBar';
 import { HomeIcon, TargetIcon, ChartIcon, BellIcon, UserIcon } from './Icons';
 
@@ -40,7 +39,6 @@ export default function Navbar({ children, homeTo = '/dashboard', links = true }
 
           <div className="flex items-center gap-2">
             {children}
-            <ThemeToggle />
           </div>
         </div>
       </nav>

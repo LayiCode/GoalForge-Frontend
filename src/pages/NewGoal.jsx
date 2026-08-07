@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import { TEMPLATES } from '../utils/goalTemplates';
@@ -7,27 +7,26 @@ import { PlusIcon, TrashIcon } from '../components/Icons';
 
 export default function NewGoal() {
   const navigate = useNavigate();
-  const [newGoal, setNewGoal] = useState({
-    title: '', description: '', category: '', status: 'IN_PROGRESS', targetDate: '', tags: ''
-  });
-  const [milestones, setMilestones] = useState(['']);
+  const { templateId } = useParams();
+  const template = templateId ? TEMPLATES.find(t => t.id === templateId) : null;
+  const [newGoal, setNewGoal] = useState(() => template
+    ? {
+        title: template.title,
+        description: template.description,
+        category: template.category,
+        status: 'IN_PROGRESS',
+        targetDate: '',
+        tags: template.tags.join(', '),
+      }
+    : { title: '', description: '', category: '', status: 'IN_PROGRESS', targetDate: '', tags: '' });
+  const [milestones, setMilestones] = useState(() => template?.milestones?.length
+    ? [...template.milestones]
+    : ['']);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
-
-  const applyTemplate = (template) => {
-    setNewGoal({
-      title: template.title,
-      description: template.description,
-      category: template.category,
-      status: 'IN_PROGRESS',
-      targetDate: '',
-      tags: template.tags.join(', '),
-    });
-    setMilestones(template.milestones.length ? [...template.milestones] : ['']);
-  };
 
   const applyPlan = (plan) => {
     setNewGoal({
@@ -91,25 +90,35 @@ export default function NewGoal() {
           <p className="mt-1 text-sm text-muted">Define something worth forging.</p>
         </div>
 
-        <div className="mb-6">
-          <h2 className="font-display mb-3 text-lg font-semibold text-ink">Start from a template</h2>
-          <p className="mb-3 text-sm text-muted">Pick a starting plan and tweak it to fit you.</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {TEMPLATES.map(template => (
-              <button
-                key={template.id}
-                type="button"
-                onClick={() => applyTemplate(template)}
-                className="card p-4 text-left transition hover:border-brand-400 hover:shadow-md"
-              >
-                <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{template.category}</p>
-                <p className="mt-1 font-semibold text-ink">{template.title}</p>
-                <p className="mt-1 line-clamp-2 text-xs text-muted">{template.description}</p>
-                <p className="mt-2 text-xs text-muted">{template.milestones.length} milestones</p>
-              </button>
-            ))}
+        {template ? (
+          <div className="card mb-6 flex flex-wrap items-center justify-between gap-3 p-5">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{template.category}</p>
+              <p className="font-semibold text-ink">Template: {template.title}</p>
+              <p className="mt-1 text-sm text-muted">Tweak the details below, then create it.</p>
+            </div>
+            <Link to="/goals/new" className="btn btn-outline">Start blank</Link>
           </div>
-        </div>
+        ) : (
+          <div className="mb-6">
+            <h2 className="font-display mb-3 text-lg font-semibold text-ink">Start from a template</h2>
+            <p className="mb-3 text-sm text-muted">Pick a starting plan — we&apos;ll open a ready-to-edit form.</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {TEMPLATES.map(t => (
+                <Link
+                  key={t.id}
+                  to={`/goals/new/${t.id}`}
+                  className="card p-4 text-left transition hover:border-brand-400 hover:shadow-md"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{t.category}</p>
+                  <p className="mt-1 font-semibold text-ink">{t.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs text-muted">{t.description}</p>
+                  <p className="mt-2 text-xs text-muted">{t.milestones.length} milestones →</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="card mb-6 p-6">
           <h2 className="font-display mb-1 text-lg font-semibold text-ink">Plan with AI</h2>

@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { SunIcon, MoonIcon } from '../components/ThemeToggle';
+import { LockIcon } from '../components/Icons';
 import api from '../services/api';
 
 const initials = (name) => {
@@ -11,45 +14,24 @@ const initials = (name) => {
   return (first + last).toUpperCase();
 };
 
+const themeClass = (active) =>
+  `flex items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition ${
+    active
+      ? 'border-brand-600 bg-brand-600 text-white'
+      : 'border-line bg-base text-muted hover:bg-base-soft'
+  }`;
+
 export default function Account() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { dark, setDark } = useTheme();
   const [profile, setProfile] = useState(null);
-
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [pwMessage, setPwMessage] = useState('');
-  const [pwError, setPwError] = useState('');
-  const [pwLoading, setPwLoading] = useState(false);
 
   useEffect(() => {
     api.get('/api/auth/me')
       .then(res => setProfile(res.data))
       .catch(err => console.error(err));
   }, []);
-
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    setPwMessage('');
-    setPwError('');
-    if (newPassword !== confirm) {
-      setPwError('Passwords do not match');
-      return;
-    }
-    setPwLoading(true);
-    try {
-      await api.post('/api/auth/change-password', { currentPassword, newPassword });
-      setPwMessage('Password updated.');
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirm('');
-    } catch (err) {
-      setPwError(err.response?.data?.error || 'Something went wrong. Please try again.');
-    } finally {
-      setPwLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-base">
@@ -94,66 +76,31 @@ export default function Account() {
             <span className="text-sm font-medium text-ink">Reminders</span>
             <span className="text-muted">→</span>
           </button>
+          <button
+            onClick={() => navigate('/change-password')}
+            className="flex w-full items-center justify-between px-6 py-4 text-left transition hover:bg-base-soft"
+          >
+            <span className="flex items-center gap-3 text-sm font-medium text-ink">
+              <LockIcon className="h-4 w-4 text-muted" />
+              Change password
+            </span>
+            <span className="text-muted">→</span>
+          </button>
         </div>
 
         <div className="card mt-4 p-6">
-          <h3 className="font-display mb-4 text-lg font-semibold text-ink">Change password</h3>
-
-          {pwMessage && (
-            <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-400">
-              {pwMessage}
-            </div>
-          )}
-          {pwError && (
-            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
-              {pwError}
-            </div>
-          )}
-
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <div>
-              <label htmlFor="current" className="label">Current password</label>
-              <input
-                id="current"
-                type="password"
-                value={currentPassword}
-                onChange={e => setCurrentPassword(e.target.value)}
-                className="input"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="new" className="label">New password</label>
-              <input
-                id="new"
-                type="password"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                className="input"
-                placeholder="••••••••"
-                required
-              />
-              <p className="mt-1.5 text-xs text-muted">
-                At least 8 characters, with uppercase, lowercase, number, and special character.
-              </p>
-            </div>
-            <div>
-              <label htmlFor="confirm" className="label">Confirm new password</label>
-              <input
-                id="confirm"
-                type="password"
-                value={confirm}
-                onChange={e => setConfirm(e.target.value)}
-                className="input"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <button type="submit" disabled={pwLoading} className="btn btn-primary w-full py-3">
-              {pwLoading ? 'Updating…' : 'Update password'}
+          <h3 className="font-display mb-1 text-lg font-semibold text-ink">Appearance</h3>
+          <p className="mb-4 text-sm text-muted">Choose how GoalForge looks for you.</p>
+          <div className="grid grid-cols-2 gap-3">
+            <button type="button" onClick={() => setDark(false)} className={themeClass(!dark)}>
+              <SunIcon />
+              Light
             </button>
-          </form>
+            <button type="button" onClick={() => setDark(true)} className={themeClass(dark)}>
+              <MoonIcon />
+              Dark
+            </button>
+          </div>
         </div>
 
         <button
