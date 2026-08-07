@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import { statusColor, categoryEmoji } from '../utils/goalUi';
+import { statusColor } from '../utils/goalUi';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div className="card p-6">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-display text-lg font-semibold text-ink">⏰ Due within 7 days</h3>
+                  <h3 className="font-display text-lg font-semibold text-ink">Due within 7 days</h3>
                   <button onClick={() => navigate('/reminders')} className="text-sm font-medium text-brand-600 hover:underline">
                     View all
                   </button>
@@ -107,7 +107,6 @@ export default function Dashboard() {
                           className="flex w-full items-center justify-between gap-3 rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-brand-300"
                         >
                           <span className="flex min-w-0 items-center gap-2">
-                            <span>{categoryEmoji(goal.category)}</span>
                             <span className="truncate text-sm font-medium text-ink">{goal.title}</span>
                           </span>
                           <span className={`chip shrink-0 whitespace-nowrap ${statusColor(goal.status)}`}>

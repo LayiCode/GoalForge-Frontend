@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import AuthCard from '../components/AuthCard';
+import { CheckIcon } from '../components/Icons';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -48,7 +49,7 @@ export default function ResetPassword() {
     >
       {done ? (
         <div className="text-center">
-          <div className="mb-3 text-4xl">✓</div>
+          <CheckIcon className="mx-auto mb-3 h-12 w-12 text-green-600" />
           <p className="mb-2 text-sm text-ink">Password updated.</p>
           <p className="mb-6 text-sm text-muted">You can now sign in with your new password.</p>
           <Link to="/login" className="btn btn-primary w-full py-3">

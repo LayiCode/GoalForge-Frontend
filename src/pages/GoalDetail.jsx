@@ -162,8 +162,8 @@ export default function GoalDetail() {
               <p className="mb-4 text-muted">{goal.description}</p>
             )}
             <div className="space-y-1 text-sm text-muted">
-              {goal.category && <p>📁 Category: {goal.category}</p>}
-              {goal.targetDate && <p>📅 Target Date: {goal.targetDate}</p>}
+              {goal.category && <p>Category: {goal.category}</p>}
+              {goal.targetDate && <p>Target Date: {goal.targetDate}</p>}
             </div>
 
             {goal.tags?.length > 0 && (
@@ -185,7 +185,7 @@ export default function GoalDetail() {
                 className="btn btn-outline"
                 title="Copy public link"
               >
-                {goal.isPublic ? (shareCopied ? '✓ Link copied!' : '🔗 Share') : '🔒 Share'}
+                {goal.isPublic ? (shareCopied ? 'Link copied!' : 'Share') : 'Share'}
               </button>
             </div>
             {!goal.isPublic && (
@@ -289,7 +289,7 @@ export default function GoalDetail() {
         </div>
 
         <div className="card mb-6 p-6">
-          <h3 className="font-display mb-4 text-lg font-semibold text-ink">📝 Journal</h3>
+          <h3 className="font-display mb-4 text-lg font-semibold text-ink">Journal</h3>
 
           <form onSubmit={handleAddNote} className="mb-4">
             <textarea placeholder="Write a note about your progress..." value={newNote}
@@ -321,7 +321,7 @@ export default function GoalDetail() {
         </div>
 
         <div className="card p-6">
-          <h3 className="font-display mb-4 text-lg font-semibold text-ink">🔗 Resources</h3>
+          <h3 className="font-display mb-4 text-lg font-semibold text-ink">Resources</h3>
 
           <form onSubmit={handleAddResource} className="mb-4 flex flex-col gap-2 sm:flex-row">
             <input type="text" placeholder="Title (e.g. Course page)" value={newResource.title}
@@ -341,7 +341,7 @@ export default function GoalDetail() {
                 <li key={resource.id} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-base p-3">
                   <a href={resource.url} target="_blank" rel="noopener noreferrer"
                     className="truncate text-sm text-brand-600 hover:underline dark:text-brand-400">
-                    🔗 {resource.title}
+                    {resource.title}
                   </a>
                   <button onClick={() => handleDeleteResource(resource.id)}
                     className="ml-3 text-xs text-muted transition hover:text-red-500">

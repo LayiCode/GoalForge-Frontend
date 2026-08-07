@@ -3,11 +3,3 @@ export const statusColor = (status) => {
   if (status === 'ABANDONED') return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400';
   return 'bg-brand-100 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400';
 };
-
-export const categoryEmoji = (category) => {
-  const map = {
-    Career: '💼', Health: '💪', Finance: '💰',
-    Personal: '🌱', Education: '📚', Travel: '✈️',
-  };
-  return map[category] || '📌';
-};

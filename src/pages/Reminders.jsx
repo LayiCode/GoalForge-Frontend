@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import { statusColor, categoryEmoji } from '../utils/goalUi';
+import { statusColor } from '../utils/goalUi';
 
 export default function Reminders() {
   const navigate = useNavigate();
@@ -59,7 +59,6 @@ export default function Reminders() {
                       onClick={() => navigate(`/goals/${goal.id}`)}
                       className="card flex items-center gap-2 px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-md"
                     >
-                      <span>{categoryEmoji(goal.category)}</span>
                       <span className="text-sm font-medium text-ink">{goal.title}</span>
                       <span className={`chip whitespace-nowrap ${statusColor(goal.status)}`}>
                         {goal.status.replace('_', ' ')}

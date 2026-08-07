@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import { categoryEmoji } from '../utils/goalUi';
 
 export default function Analytics() {
   const [stats, setStats] = useState(null);
@@ -65,7 +64,7 @@ export default function Analytics() {
                   <div className="space-y-3">
                     {categoryEntries.map(([cat, count]) => (
                       <div key={cat} className="flex items-center gap-3">
-                        <span className="w-24 truncate text-xs text-muted">{categoryEmoji(cat)} {cat}</span>
+                        <span className="w-24 truncate text-xs text-muted">{cat}</span>
                         <div className="h-2.5 flex-1 rounded-full bg-line">
                           <div
                             className="h-2.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-700 transition-all"

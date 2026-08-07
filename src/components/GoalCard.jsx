@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { statusColor, categoryEmoji } from '../utils/goalUi';
+import { statusColor } from '../utils/goalUi';
+import { GlobeIcon, TrashIcon, CalendarIcon } from './Icons';
 
 export default function GoalCard({ goal, onDeleted, compact = false }) {
   const navigate = useNavigate();
@@ -22,7 +23,6 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
     >
       <div className="mb-3 flex items-start justify-between gap-2">
         <div className="flex items-start gap-2">
-          <span className="text-xl">{categoryEmoji(goal.category)}</span>
           <h3 className="font-semibold leading-tight text-ink">{goal.title}</h3>
         </div>
         <div className="flex items-center gap-1.5">
@@ -31,7 +31,7 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
               className="chip bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
               title="Shared publicly"
             >
-              🌐
+              <GlobeIcon className="h-3.5 w-3.5" />
             </span>
           )}
           <span className={`chip whitespace-nowrap ${statusColor(goal.status)}`}>
@@ -69,8 +69,13 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
         </div>
       )}
 
-      <div className="mb-4 text-xs text-muted">
-        {goal.targetDate && <p>📅 Due: {goal.targetDate}</p>}
+      <div className="mb-4 flex items-center gap-1.5 text-xs text-muted">
+        {goal.targetDate && (
+          <>
+            <CalendarIcon className="h-3.5 w-3.5" />
+            <p>Due: {goal.targetDate}</p>
+          </>
+        )}
       </div>
 
       <div className="mt-auto flex gap-2" onClick={e => e.stopPropagation()}>
@@ -85,7 +90,7 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
           className="btn btn-danger px-3!"
           aria-label="Delete goal"
         >
-          🗑️
+          <TrashIcon className="h-4 w-4" />
         </button>
       </div>
     </div>

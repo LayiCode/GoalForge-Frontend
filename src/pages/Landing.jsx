@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Logo from '../components/Logo';
 import ThemeToggle from '../components/ThemeToggle';
+import { CheckIcon } from '../components/Icons';
 
 const FEATURES = [
   'Set meaningful goals and break them into milestones',
@@ -43,8 +44,8 @@ export default function Landing() {
         <ul className="mt-10 space-y-3 text-left">
           {FEATURES.map(item => (
             <li key={item} className="flex items-center gap-3">
-              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-sm text-brand-400">
-                ✓
+              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-400">
+                <CheckIcon className="h-3.5 w-3.5" />
               </span>
               <span className="text-stone-300">{item}</span>
             </li>

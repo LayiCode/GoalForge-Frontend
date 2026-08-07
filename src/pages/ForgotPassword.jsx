@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import AuthCard from '../components/AuthCard';
+import { MailIcon } from '../components/Icons';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -40,7 +41,7 @@ export default function ForgotPassword() {
     >
       {sent ? (
         <div className="text-center">
-          <div className="mb-3 text-4xl">📬</div>
+          <MailIcon className="mx-auto mb-3 h-12 w-12 text-brand-600" />
           <p className="mb-2 text-sm text-ink">Check your inbox.</p>
           <p className="text-sm text-muted">
             If an account exists for <span className="font-medium text-ink">{email}</span>, we&apos;ve
@@ -67,7 +68,6 @@ export default function ForgotPassword() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="input"
-                placeholder="you@example.com"
                 required
                 autoFocus
               />

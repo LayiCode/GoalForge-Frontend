@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
+import { HomeIcon, TargetIcon, ChartIcon, BellIcon, UserIcon } from './Icons';
 
 const NAV = [
-  { to: '/dashboard', label: 'Overview', icon: '🏠' },
-  { to: '/goals', label: 'Goals', icon: '🎯' },
-  { to: '/analytics', label: 'Analytics', icon: '📊' },
-  { to: '/reminders', label: 'Reminders', icon: '⏰' },
-  { to: '/account', label: 'Account', icon: '👤' },
+  { to: '/dashboard', label: 'Overview', icon: <HomeIcon className="h-[18px] w-[18px]" /> },
+  { to: '/goals', label: 'Goals', icon: <TargetIcon className="h-[18px] w-[18px]" /> },
+  { to: '/analytics', label: 'Analytics', icon: <ChartIcon className="h-[18px] w-[18px]" /> },
+  { to: '/reminders', label: 'Reminders', icon: <BellIcon className="h-[18px] w-[18px]" /> },
+  { to: '/account', label: 'Account', icon: <UserIcon className="h-[18px] w-[18px]" /> },
 ];
 
 const linkClass = ({ isActive }) =>
@@ -31,7 +32,7 @@ export default function Navbar({ children, homeTo = '/dashboard', links = true }
           <div className="hidden items-center gap-1 md:flex">
             {NAV.map(item => (
               <NavLink key={item.to} to={item.to} className={linkClass}>
-                <span className="text-base leading-none">{item.icon}</span>
+                {item.icon}
                 {item.label}
               </NavLink>
             ))}
@@ -67,7 +68,7 @@ export default function Navbar({ children, homeTo = '/dashboard', links = true }
               onClick={() => setOpen(false)}
               className={`${linkClass} w-full justify-start`}
             >
-              <span className="text-base leading-none">{item.icon}</span>
+              {item.icon}
               {item.label}
             </NavLink>
           ))}

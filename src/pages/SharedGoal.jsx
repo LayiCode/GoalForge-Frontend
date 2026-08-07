@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import { LockIcon } from '../components/Icons';
 
 export default function SharedGoal() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function SharedGoal() {
   if (error || !goal) return (
     <div className="flex min-h-screen items-center justify-center bg-base">
       <div className="text-center">
-        <p className="mb-4 text-5xl">🔒</p>
+        <LockIcon className="mx-auto mb-4 h-12 w-12 text-muted" />
         <h1 className="font-display mb-2 text-xl font-semibold text-ink">Goal not found</h1>
         <p className="mb-6 text-muted">This goal isn&apos;t public or doesn&apos;t exist.</p>
         <Link to="/" className="text-sm font-semibold text-brand-600 hover:underline">Back to GoalForge</Link>
@@ -64,8 +65,8 @@ export default function SharedGoal() {
             <p className="mb-4 text-muted">{goal.description}</p>
           )}
           <div className="space-y-1 text-sm text-muted">
-            {goal.category && <p>📁 {goal.category}</p>}
-            {goal.targetDate && <p>📅 Target Date: {goal.targetDate}</p>}
+            {goal.category && <p>Category: {goal.category}</p>}
+            {goal.targetDate && <p>Target Date: {goal.targetDate}</p>}
           </div>
           {goal.tags?.length > 0 && (
             <div className="mt-4 flex flex-wrap justify-center gap-1.5">
@@ -103,8 +104,8 @@ export default function SharedGoal() {
                   <span
                     className="h-4 w-4 flex-shrink-0 rounded-full border-2"
                     style={{
-                      backgroundColor: milestone.completed ? '#ea580c' : 'transparent',
-                      borderColor: milestone.completed ? '#ea580c' : 'var(--text-muted)',
+                      backgroundColor: milestone.completed ? '#2563eb' : 'transparent',
+                      borderColor: milestone.completed ? '#2563eb' : 'var(--text-muted)',
                     }}
                   />
                   <span className={`text-sm ${milestone.completed ? 'text-muted line-through' : 'text-ink'}`}>
@@ -116,7 +117,7 @@ export default function SharedGoal() {
           )}
         </div>
 
-        <p className="mt-8 text-center text-xs text-muted">Made with 🔥 GoalForge</p>
+        <p className="mt-8 text-center text-xs text-muted">Made with GoalForge</p>
       </div>
     </div>
   );

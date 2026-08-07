@@ -90,7 +90,6 @@ export default function Register() {
             value={fullName}
             onChange={e => setFullName(e.target.value)}
             className="input"
-            placeholder="Uthman"
             required
           />
         </div>
@@ -103,7 +102,6 @@ export default function Register() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             className="input"
-            placeholder="you@example.com"
             required
           />
         </div>
@@ -116,7 +114,6 @@ export default function Register() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             className="input"
-            placeholder="At least 8 characters"
             required
           />
           {password && (

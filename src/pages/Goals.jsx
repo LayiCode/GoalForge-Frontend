@@ -57,7 +57,7 @@ export default function Goals() {
         <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
           <input
             type="text"
-            placeholder="🔍 Search goals..."
+            placeholder="Search goals..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(0); }}
             className="input"
