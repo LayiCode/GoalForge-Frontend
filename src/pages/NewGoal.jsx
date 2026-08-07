@@ -13,6 +13,9 @@ export default function NewGoal() {
   const [milestones, setMilestones] = useState(['']);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
 
   const applyTemplate = (template) => {
     setNewGoal({
@@ -24,6 +27,32 @@ export default function NewGoal() {
       tags: template.tags.join(', '),
     });
     setMilestones(template.milestones.length ? [...template.milestones] : ['']);
+  };
+
+  const applyPlan = (plan) => {
+    setNewGoal({
+      title: plan.title || '',
+      description: plan.description || '',
+      category: plan.category || '',
+      status: 'IN_PROGRESS',
+      targetDate: '',
+      tags: (plan.tags || []).join(', '),
+    });
+    setMilestones(plan.milestones?.length ? [...plan.milestones] : ['']);
+  };
+
+  const handleAiPlan = async () => {
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const res = await api.post('/api/ai/plan', { prompt: aiPrompt });
+      applyPlan(res.data);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      setAiError(err.response?.data?.error || 'AI could not plan this goal. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const updateMilestone = (i, value) =>
@@ -80,6 +109,29 @@ export default function NewGoal() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="card mb-6 p-6">
+          <h2 className="font-display mb-1 text-lg font-semibold text-ink">Plan with AI</h2>
+          <p className="mb-4 text-sm text-muted">Describe a goal in your own words and let AI shape it into clear steps.</p>
+          <textarea
+            value={aiPrompt}
+            onChange={e => setAiPrompt(e.target.value)}
+            rows={2}
+            placeholder="e.g. I want to get fit, cook my own meals, and start freelancing"
+            className="input resize-none"
+          />
+          <button
+            type="button"
+            onClick={handleAiPlan}
+            disabled={aiLoading || !aiPrompt.trim()}
+            className="btn btn-primary mt-3"
+          >
+            {aiLoading ? 'Planning…' : 'Plan with AI'}
+          </button>
+          {aiError && (
+            <p className="mt-3 text-sm text-red-600 dark:text-red-400">{aiError}</p>
+          )}
         </div>
 
         <div className="card p-6">
