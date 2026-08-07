@@ -32,7 +32,7 @@ export default function NewGoal() {
     <div className="min-h-screen bg-base">
       <Navbar />
 
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-2xl px-4 pt-8 pb-28 sm:px-6 md:pb-8">
         <Link to="/goals" className="nav-item mb-4 -ml-3">← Back to goals</Link>
 
         <div className="mb-6">

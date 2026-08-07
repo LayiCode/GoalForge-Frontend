@@ -34,7 +34,7 @@ export default function Analytics() {
     <div className="min-h-screen bg-base">
       <Navbar />
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 pt-8 pb-28 sm:px-6 md:pb-8">
         <div className="mb-6">
           <h1 className="section-title">Analytics</h1>
           <p className="mt-1 text-sm text-muted">Your progress at a glance</p>
