@@ -21,8 +21,8 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-stone-950 text-white">
-      <div className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-ember-600/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-ember-800/25 blur-3xl" />
+      <div className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-brand-600/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-brand-800/25 blur-3xl" />
 
       <div className="absolute right-6 top-6">
         <ThemeToggle className="rounded-xl border border-white/20 p-2.5 text-stone-300 transition hover:bg-white/10 hover:text-white" />
@@ -33,7 +33,7 @@ export default function Landing() {
         <h1 className="font-display mt-6 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
           Forge goals.
           <br />
-          Make <span className="text-ember-400">progress</span> real.
+          Make <span className="text-brand-400">progress</span> real.
         </h1>
         <p className="mt-5 max-w-lg text-stone-400">
           A quiet, dependable goal tracker. Set your targets, break them into milestones, and keep
@@ -43,7 +43,7 @@ export default function Landing() {
         <ul className="mt-10 space-y-3 text-left">
           {FEATURES.map(item => (
             <li key={item} className="flex items-center gap-3">
-              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-ember-500/20 text-sm text-ember-400">
+              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-sm text-brand-400">
                 ✓
               </span>
               <span className="text-stone-300">{item}</span>
@@ -54,7 +54,7 @@ export default function Landing() {
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <button
             onClick={() => navigate('/login')}
-            className="rounded-xl bg-gradient-to-b from-ember-400 to-ember-600 px-8 py-3.5 text-base font-semibold text-white shadow-md shadow-ember-500/30 transition hover:from-ember-500 hover:to-ember-700 hover:shadow-ember-500/40 active:scale-[.98]"
+            className="rounded-xl bg-gradient-to-b from-brand-400 to-brand-600 px-8 py-3.5 text-base font-semibold text-white shadow-md shadow-brand-500/30 transition hover:from-brand-500 hover:to-brand-700 hover:shadow-brand-500/40 active:scale-[.98]"
           >
             Get started
           </button>

@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   const statCards = [
     { label: 'Total Goals', value: stats?.totalGoals, tint: 'text-ink', to: '/goals' },
-    { label: 'In Progress', value: stats?.byStatus?.IN_PROGRESS, tint: 'text-ember-600', to: '/goals?status=IN_PROGRESS' },
+    { label: 'In Progress', value: stats?.byStatus?.IN_PROGRESS, tint: 'text-brand-600', to: '/goals?status=IN_PROGRESS' },
     { label: 'Completed', value: stats?.byStatus?.COMPLETED, tint: 'text-green-600', to: '/goals?status=COMPLETED' },
   ];
 
@@ -61,7 +61,7 @@ export default function Dashboard() {
               <div className="card p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-display text-lg font-semibold text-ink">⏰ Due within 7 days</h3>
-                  <button onClick={() => navigate('/reminders')} className="text-sm font-medium text-ember-600 hover:underline">
+                  <button onClick={() => navigate('/reminders')} className="text-sm font-medium text-brand-600 hover:underline">
                     View all
                   </button>
                 </div>
@@ -73,7 +73,7 @@ export default function Dashboard() {
                       <li key={goal.id}>
                         <button
                           onClick={() => navigate(`/goals/${goal.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-ember-300"
+                          className="flex w-full items-center justify-between rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-brand-300"
                         >
                           <span className="truncate text-sm font-medium text-ink">{goal.title}</span>
                           <span className="ml-3 shrink-0 text-xs text-muted">{goal.targetDate}</span>
@@ -87,7 +87,7 @@ export default function Dashboard() {
               <div className="card p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-display text-lg font-semibold text-ink">Recent goals</h3>
-                  <button onClick={() => navigate('/goals')} className="text-sm font-medium text-ember-600 hover:underline">
+                  <button onClick={() => navigate('/goals')} className="text-sm font-medium text-brand-600 hover:underline">
                     View all
                   </button>
                 </div>
@@ -104,7 +104,7 @@ export default function Dashboard() {
                       <li key={goal.id}>
                         <button
                           onClick={() => navigate(`/goals/${goal.id}`)}
-                          className="flex w-full items-center justify-between gap-3 rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-ember-300"
+                          className="flex w-full items-center justify-between gap-3 rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-brand-300"
                         >
                           <span className="flex min-w-0 items-center gap-2">
                             <span>{categoryEmoji(goal.category)}</span>

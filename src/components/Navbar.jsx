@@ -12,7 +12,7 @@ const NAV = [
 ];
 
 const linkClass = ({ isActive }) =>
-  `nav-item ${isActive ? 'bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-300' : ''}`;
+  `nav-item ${isActive ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300' : ''}`;
 
 export default function Navbar({ children, homeTo = '/dashboard', links = true }) {
   const [open, setOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function Navbar({ children, homeTo = '/dashboard', links = true }
         <Link to={homeTo} className="flex items-center gap-2.5">
           <Logo size={30} />
           <span className="font-display text-lg font-bold text-ink">
-            Goal<span className="text-ember-600">Forge</span>
+            Goal<span className="text-brand-600">Forge</span>
           </span>
         </Link>
 

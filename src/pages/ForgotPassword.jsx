@@ -31,7 +31,7 @@ export default function ForgotPassword() {
         sent ? null : (
           <>
             Remembered it?{' '}
-            <Link to="/login" className="font-semibold text-ember-600 hover:underline">
+            <Link to="/login" className="font-semibold text-brand-600 hover:underline">
               Back to login
             </Link>
           </>

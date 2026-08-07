@@ -19,7 +19,7 @@ export default function SharedGoal() {
   const statusColor = (status) => {
     if (status === 'COMPLETED') return 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400';
     if (status === 'ABANDONED') return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400';
-    return 'bg-ember-100 text-ember-700 dark:bg-ember-500/15 dark:text-ember-400';
+    return 'bg-brand-100 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400';
   };
 
   if (loading) return (
@@ -34,7 +34,7 @@ export default function SharedGoal() {
         <p className="mb-4 text-5xl">🔒</p>
         <h1 className="font-display mb-2 text-xl font-semibold text-ink">Goal not found</h1>
         <p className="mb-6 text-muted">This goal isn&apos;t public or doesn&apos;t exist.</p>
-        <Link to="/" className="text-sm font-semibold text-ember-600 hover:underline">Back to GoalForge</Link>
+        <Link to="/" className="text-sm font-semibold text-brand-600 hover:underline">Back to GoalForge</Link>
       </div>
     </div>
   );
@@ -70,7 +70,7 @@ export default function SharedGoal() {
           {goal.tags?.length > 0 && (
             <div className="mt-4 flex flex-wrap justify-center gap-1.5">
               {goal.tags.map(tag => (
-                <span key={tag} className="chip bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-400">
+                <span key={tag} className="chip bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
                   #{tag}
                 </span>
               ))}
@@ -85,7 +85,7 @@ export default function SharedGoal() {
           </div>
           <div className="h-3 w-full rounded-full bg-line">
             <div
-              className="h-3 rounded-full bg-gradient-to-r from-ember-400 to-ember-700 transition-all"
+              className="h-3 rounded-full bg-gradient-to-r from-brand-400 to-brand-700 transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>

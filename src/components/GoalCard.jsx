@@ -47,7 +47,7 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
       {goal.tags?.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-1.5">
           {goal.tags.map(tag => (
-            <span key={tag} className="chip bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-400">
+            <span key={tag} className="chip bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
               #{tag}
             </span>
           ))}
@@ -62,7 +62,7 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
           </div>
           <div className="h-1.5 w-full rounded-full bg-line">
             <div
-              className="h-1.5 rounded-full bg-gradient-to-r from-ember-400 to-ember-700 transition-all"
+              className="h-1.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-700 transition-all"
               style={{ width: `${Math.round((completed / total) * 100)}%` }}
             />
           </div>
@@ -76,7 +76,7 @@ export default function GoalCard({ goal, onDeleted, compact = false }) {
       <div className="mt-auto flex gap-2" onClick={e => e.stopPropagation()}>
         <button
           onClick={() => navigate(`/goals/${goal.id}`)}
-          className="btn flex-1 border border-ember-200 bg-ember-50 text-ember-700 hover:bg-ember-100 dark:border-ember-500/30 dark:bg-ember-500/10 dark:text-ember-300 dark:hover:bg-ember-500/20"
+          className="btn flex-1 border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300 dark:hover:bg-brand-500/20"
         >
           View details
         </button>

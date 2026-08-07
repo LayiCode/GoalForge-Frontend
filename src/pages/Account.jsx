@@ -60,7 +60,7 @@ export default function Account() {
 
         <div className="card mt-6 p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-ember-500 to-ember-700 font-display text-2xl font-bold text-white">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 font-display text-2xl font-bold text-white">
               {initials(profile?.fullName)}
             </div>
             <div className="min-w-0">

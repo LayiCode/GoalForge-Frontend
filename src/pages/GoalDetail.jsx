@@ -124,7 +124,7 @@ export default function GoalDetail() {
   const statusColor = (status) => {
     if (status === 'COMPLETED') return 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400';
     if (status === 'ABANDONED') return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400';
-    return 'bg-ember-100 text-ember-700 dark:bg-ember-500/15 dark:text-ember-400';
+    return 'bg-brand-100 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400';
   };
 
   if (loading) return (
@@ -169,7 +169,7 @@ export default function GoalDetail() {
             {goal.tags?.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {goal.tags.map(tag => (
-                  <span key={tag} className="chip bg-ember-50 text-ember-700 dark:bg-ember-500/10 dark:text-ember-400">
+                  <span key={tag} className="chip bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
                     #{tag}
                   </span>
                 ))}
@@ -225,7 +225,7 @@ export default function GoalDetail() {
               <label className="flex cursor-pointer items-center gap-2 text-sm text-ink">
                 <input type="checkbox" checked={editData.isPublic}
                   onChange={e => setEditData({ ...editData, isPublic: e.target.checked })}
-                  className="h-4 w-4 cursor-pointer accent-ember-600" />
+                  className="h-4 w-4 cursor-pointer accent-brand-600" />
                 Share this goal publicly
               </label>
               <div className="flex gap-2">
@@ -247,7 +247,7 @@ export default function GoalDetail() {
           </div>
           <div className="h-3 w-full rounded-full bg-line">
             <div
-              className="h-3 rounded-full bg-gradient-to-r from-ember-400 to-ember-700 transition-all"
+              className="h-3 rounded-full bg-gradient-to-r from-brand-400 to-brand-700 transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -273,7 +273,7 @@ export default function GoalDetail() {
                   <div className="flex items-center gap-3">
                     <input type="checkbox" checked={milestone.completed}
                       onChange={() => handleToggleMilestone(milestone)}
-                      className="h-4 w-4 cursor-pointer accent-ember-600" />
+                      className="h-4 w-4 cursor-pointer accent-brand-600" />
                     <span className={`text-sm ${milestone.completed ? 'text-muted line-through' : 'text-ink'}`}>
                       {milestone.title}
                     </span>
@@ -340,7 +340,7 @@ export default function GoalDetail() {
               {resources.map(resource => (
                 <li key={resource.id} className="flex items-center justify-between gap-3 rounded-xl border border-line bg-base p-3">
                   <a href={resource.url} target="_blank" rel="noopener noreferrer"
-                    className="truncate text-sm text-ember-600 hover:underline dark:text-ember-400">
+                    className="truncate text-sm text-brand-600 hover:underline dark:text-brand-400">
                     🔗 {resource.title}
                   </a>
                   <button onClick={() => handleDeleteResource(resource.id)}

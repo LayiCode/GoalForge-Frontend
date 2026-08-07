@@ -14,13 +14,13 @@ export default function Analytics() {
   }, []);
 
   const statusOrder = [
-    { key: 'IN_PROGRESS', label: 'In progress', tint: 'bg-ember-500' },
+    { key: 'IN_PROGRESS', label: 'In progress', tint: 'bg-brand-500' },
     { key: 'COMPLETED', label: 'Completed', tint: 'bg-green-500' },
     { key: 'ABANDONED', label: 'Abandoned', tint: 'bg-red-500' },
   ];
 
   const tiles = [
-    { label: 'Milestones', value: stats?.totalMilestones, tint: 'text-ember-600' },
+    { label: 'Milestones', value: stats?.totalMilestones, tint: 'text-brand-600' },
     { label: 'Completed', value: stats?.completedMilestones, tint: 'text-green-600' },
     { label: 'Completion rate', value: `${stats?.milestoneCompletionRate ?? 0}%`, tint: 'text-blue-600' },
     { label: 'Shared goals', value: stats?.publicGoals, tint: 'text-amber-600' },
@@ -68,7 +68,7 @@ export default function Analytics() {
                         <span className="w-24 truncate text-xs text-muted">{categoryEmoji(cat)} {cat}</span>
                         <div className="h-2.5 flex-1 rounded-full bg-line">
                           <div
-                            className="h-2.5 rounded-full bg-gradient-to-r from-ember-400 to-ember-700 transition-all"
+                            className="h-2.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-700 transition-all"
                             style={{ width: `${(count / catMax) * 100}%` }}
                           />
                         </div>
