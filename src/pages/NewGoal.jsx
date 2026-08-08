@@ -17,9 +17,10 @@ export default function NewGoal() {
         category: template.category,
         status: 'IN_PROGRESS',
         targetDate: '',
+        reminderAt: '',
         tags: template.tags.join(', '),
       }
-    : { title: '', description: '', category: '', status: 'IN_PROGRESS', targetDate: '', tags: '' });
+    : { title: '', description: '', category: '', status: 'IN_PROGRESS', targetDate: '', reminderAt: '', tags: '' });
   const [milestones, setMilestones] = useState(() => template?.milestones?.length
     ? [...template.milestones]
     : ['']);
@@ -33,6 +34,7 @@ export default function NewGoal() {
       category: plan.category || '',
       status: 'IN_PROGRESS',
       targetDate: '',
+      reminderAt: '',
       tags: (plan.tags || []).join(', '),
     });
     setMilestones(plan.milestones?.length ? [...plan.milestones] : ['']);
@@ -56,6 +58,7 @@ export default function NewGoal() {
     try {
       const payload = {
         ...newGoal,
+        reminderAt: newGoal.reminderAt || null,
         tags: newGoal.tags.split(',').map(t => t.trim()).filter(Boolean),
         milestones: milestones.map(m => m.trim()).filter(Boolean),
       };
@@ -208,6 +211,20 @@ export default function NewGoal() {
                   <option value="ABANDONED">Abandoned</option>
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="reminderAt" className="label">Remind me (optional)</label>
+              <input
+                id="reminderAt"
+                type="datetime-local"
+                value={newGoal.reminderAt}
+                onChange={e => setNewGoal({ ...newGoal, reminderAt: e.target.value })}
+                className="input"
+              />
+              <p className="mt-1 text-xs text-muted">
+                You&apos;ll get a push notification at this time (enable notifications in Account).
+              </p>
             </div>
 
             <div>
