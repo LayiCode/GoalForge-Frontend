@@ -12,6 +12,7 @@ import NewGoal from './pages/NewGoal';
 import GoalDetail from './pages/GoalDetail';
 import Analytics from './pages/Analytics';
 import Reminders from './pages/Reminders';
+import Alarms from './pages/Alarms';
 import Account from './pages/Account';
 import ChangePassword from './pages/ChangePassword';
 import SharedGoal from './pages/SharedGoal';
@@ -42,6 +43,7 @@ function AppRoutes() {
       <Route path="/goals/:id" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
       <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
       <Route path="/reminders" element={<ProtectedRoute><Reminders /></ProtectedRoute>} />
+      <Route path="/alarm" element={<ProtectedRoute><Alarms /></ProtectedRoute>} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
       <Route path="/shared/:id" element={<SharedGoal />} />
