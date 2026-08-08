@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import GoalCard from '../components/GoalCard';
+import PageLoader from '../components/PageLoader';
 
 export default function Goals() {
   const [searchParams] = useSearchParams();
@@ -84,9 +85,7 @@ export default function Goals() {
         </div>
 
         {loading ? (
-          <div className="py-20 text-center">
-            <p className="text-muted">Loading your goals…</p>
-          </div>
+          <PageLoader />
         ) : goals.length === 0 ? (
           <div className="card py-16 text-center">
             <h3 className="font-display mb-2 text-xl font-semibold text-ink">No goals found</h3>

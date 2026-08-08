@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import PageLoader from '../components/PageLoader';
 
 export default function Analytics() {
   const [stats, setStats] = useState(null);
@@ -43,7 +44,7 @@ export default function Analytics() {
         {error ? (
           <div className="card p-8 text-center text-muted">Could not load analytics.</div>
         ) : !stats ? (
-          <div className="py-20 text-center"><p className="text-muted">Loading…</p></div>
+          <PageLoader />
         ) : (
           <>
             <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">

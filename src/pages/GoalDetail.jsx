@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import PageLoader from '../components/PageLoader';
 
 export default function GoalDetail() {
   const { id } = useParams();
@@ -128,8 +129,10 @@ export default function GoalDetail() {
   };
 
   if (loading) return (
-    <div className="flex min-h-screen items-center justify-center bg-base">
-      <p className="text-muted">Loading…</p>
+    <div className="flex min-h-screen items-center justify-center bg-base px-4">
+      <div className="w-full max-w-3xl">
+        <PageLoader />
+      </div>
     </div>
   );
 

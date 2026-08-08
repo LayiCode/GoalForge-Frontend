@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import PageLoader from '../components/PageLoader';
 import { statusColor } from '../utils/goalUi';
 
 export default function Dashboard() {
@@ -41,7 +42,7 @@ export default function Dashboard() {
         </div>
 
         {loading ? (
-          <div className="py-20 text-center"><p className="text-muted">Loading…</p></div>
+          <PageLoader />
         ) : (
           <>
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">

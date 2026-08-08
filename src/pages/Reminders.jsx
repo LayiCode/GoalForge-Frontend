@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import { statusColor } from '../utils/goalUi';
+import PageLoader from '../components/PageLoader';
 
 export default function Reminders() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function Reminders() {
         </div>
 
         {loading ? (
-          <div className="py-20 text-center"><p className="text-muted">Loading…</p></div>
+          <PageLoader />
         ) : dates.length === 0 ? (
           <div className="card py-16 text-center">
             <h3 className="font-display mb-2 text-xl font-semibold text-ink">All caught up</h3>
