@@ -36,9 +36,14 @@ export default function Dashboard() {
             <h1 className="section-title">Overview</h1>
             <p className="mt-1 text-sm text-muted">A quick look at your goals.</p>
           </div>
-          <button onClick={() => navigate('/goals/new')} className="btn btn-primary">
-            + New Goal
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/alarm')} className="btn btn-outline">
+              ⏱ Alarms
+            </button>
+            <button onClick={() => navigate('/goals/new')} className="btn btn-primary">
+              + New Goal
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -77,7 +82,11 @@ export default function Dashboard() {
                           className="flex w-full items-center justify-between rounded-xl border border-line bg-base px-3 py-2.5 text-left transition hover:border-brand-300"
                         >
                           <span className="truncate text-sm font-medium text-ink">{goal.title}</span>
-                          <span className="ml-3 shrink-0 text-xs text-muted">{goal.targetDate}</span>
+                          <span className="ml-3 shrink-0 text-xs text-muted">
+                            {goal.reminderAt
+                              ? new Date(goal.reminderAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                              : goal.targetDate}
+                          </span>
                         </button>
                       </li>
                     ))}
