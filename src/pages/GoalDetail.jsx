@@ -27,6 +27,7 @@ export default function GoalDetail() {
           category: res.data.category,
           status: res.data.status,
           targetDate: res.data.targetDate,
+          reminderAt: (res.data.reminderAt || '').slice(0, 16),
           tags: (res.data.tags || []).join(', '),
           isPublic: res.data.isPublic,
         });
@@ -78,6 +79,7 @@ export default function GoalDetail() {
     e.preventDefault();
     const payload = {
       ...editData,
+      reminderAt: editData.reminderAt || null,
       tags: editData.tags.split(',').map(t => t.trim()).filter(Boolean),
     };
     await api.put(`/api/goals/${id}`, payload);
@@ -167,6 +169,12 @@ export default function GoalDetail() {
             <div className="space-y-1 text-sm text-muted">
               {goal.category && <p>Category: {goal.category}</p>}
               {goal.targetDate && <p>Target Date: {goal.targetDate}</p>}
+              {goal.reminderAt && (
+                <p>
+                  Reminder: {new Date(goal.reminderAt).toLocaleDateString([], { month: 'short', day: 'numeric' })} at{' '}
+                  {new Date(goal.reminderAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              )}
             </div>
 
             {goal.tags?.length > 0 && (
@@ -215,6 +223,9 @@ export default function GoalDetail() {
                   onChange={e => setEditData({ ...editData, targetDate: e.target.value })}
                   className="input" />
               </div>
+              <input type="datetime-local" value={editData.reminderAt}
+                onChange={e => setEditData({ ...editData, reminderAt: e.target.value })}
+                className="input" />
               <input type="text" placeholder="Tags (comma separated)" value={editData.tags}
                 onChange={e => setEditData({ ...editData, tags: e.target.value })}
                 className="input" />
