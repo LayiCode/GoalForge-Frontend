@@ -18,13 +18,18 @@ export default function Reminders() {
   }, []);
 
   const byDate = reminders.reduce((acc, goal) => {
-    const date = goal.targetDate || 'No date';
+    const date = (goal.reminderAt ? goal.reminderAt.slice(0, 10) : goal.targetDate) || 'No date';
     (acc[date] = acc[date] || []).push(goal);
     return acc;
   }, {});
   const dates = Object.keys(byDate).sort();
 
   const today = new Date().toISOString().slice(0, 10);
+
+  const timeLabel = (goal) => {
+    if (!goal.reminderAt) return null;
+    return new Date(goal.reminderAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <div className="min-h-screen bg-base">
@@ -33,7 +38,7 @@ export default function Reminders() {
       <div className="mx-auto max-w-3xl px-4 pt-8 pb-28 sm:px-6 md:pb-8">
         <div className="mb-6">
           <h1 className="section-title">Reminders</h1>
-          <p className="mt-1 text-sm text-muted">Goals with a target date in the next 30 days</p>
+          <p className="mt-1 text-sm text-muted">Target dates and reminders in the next 30 days</p>
         </div>
 
         {loading ? (
@@ -61,6 +66,11 @@ export default function Reminders() {
                       className="card flex items-center gap-2 px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-md"
                     >
                       <span className="text-sm font-medium text-ink">{goal.title}</span>
+                      {timeLabel(goal) && (
+                        <span className="chip whitespace-nowrap bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
+                          {timeLabel(goal)}
+                        </span>
+                      )}
                       <span className={`chip whitespace-nowrap ${statusColor(goal.status)}`}>
                         {goal.status.replace('_', ' ')}
                       </span>
