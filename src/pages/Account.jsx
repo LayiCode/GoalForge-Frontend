@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AlertsCard from '../components/AlertsCard';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { SunIcon, MoonIcon } from '../components/ThemeToggle';
@@ -77,6 +78,13 @@ export default function Account() {
             <span className="text-muted">→</span>
           </button>
           <button
+            onClick={() => navigate('/alarm')}
+            className="flex w-full items-center justify-between px-6 py-4 text-left transition hover:bg-base-soft"
+          >
+            <span className="text-sm font-medium text-ink">Alarms &amp; countdown</span>
+            <span className="text-muted">→</span>
+          </button>
+          <button
             onClick={() => navigate('/change-password')}
             className="flex w-full items-center justify-between px-6 py-4 text-left transition hover:bg-base-soft"
           >
@@ -87,6 +95,8 @@ export default function Account() {
             <span className="text-muted">→</span>
           </button>
         </div>
+
+        <AlertsCard />
 
         <div className="card mt-4 p-6">
           <h3 className="font-display mb-1 text-lg font-semibold text-ink">Appearance</h3>
