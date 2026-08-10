@@ -2,8 +2,10 @@
 # Deploy this repo ("frontend") as a Blueprint on Render.
 # Docs: https://render.com/docs/blueprint-spec
 #
-# API_URL is injected at container start into /usr/share/nginx/html/config.js.
-# Set it to your deployed backend URL, e.g. https://goalforge-punl.onrender.com
+# The API URL is baked into the bundle at build time via VITE_API_URL
+# (see Dockerfile `ARG VITE_API_URL`). Set it to your deployed backend
+# URL, e.g. https://goalforge-punl.onrender.com, as a build-time
+# environment variable in the Render service settings.
 # (Deploy the backend first, then copy its URL here and re-deploy.)
 
 services:
@@ -13,6 +15,3 @@ services:
     plan: free
     region: oregon
     dockerfilePath: ./Dockerfile
-    envVars:
-      - key: API_URL
-        value: https://goalforge-punl.onrender.com

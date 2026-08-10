@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const runtimeConfig = typeof window !== 'undefined' ? window.APP_CONFIG : undefined;
-
 const api = axios.create({
-  baseURL: runtimeConfig?.VITE_API_URL || import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
 });
 
 // Attach token to every request
